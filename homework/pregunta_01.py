@@ -16,59 +16,6 @@ def pregunta_01():
       espacios por guiones bajos.
     - Las palabras clave deben estar separadas por coma y con un solo
       espacio entre palabra y palabra.
-with open('files/input/clusters_report.txt', 'r', encoding='utf-8') as file:
-      lines = file.readlines()
-      
-      # Eliminar saltos de línea y espacios innecesarios
-      lines = [line.strip() for line in lines]
-
-      # Procesar los datos
-      data = []
-      current_cluster = []
-
-      for line in lines:
-          if line.startswith('---'):  # Ignorar separadores
-              continue
-          if line and line[0].isdigit():  # Nueva fila de cluster detectada
-              if current_cluster:
-                  data.append(current_cluster)
-              current_cluster = [line]
-          else:  # Parte de las palabras clave
-              current_cluster[-1] += " " + line.strip()
-
-      if current_cluster:  # Agregar el último registro
-          data.append(current_cluster)
-
-      # Procesar las líneas en columnas
-      processed_data = []
-      for cluster in data:
-          # Separar la línea principal en columnas
-          parts = cluster[0].split(maxsplit=3)
-          cluster_id = int(parts[0])  # Cluster ID
-          cantidad = int(parts[1])  # Cantidad de palabras clave
-          porcentaje = parts[2]  # Porcentaje de palabras clave
-          palabras_clave = parts[3]  # Primer fragmento de palabras clave
-
-          # Combinar con el resto de las líneas del cluster
-          for extra_line in cluster[1:]:
-              palabras_clave += " " + extra_line
-
-          # Formatear palabras clave: eliminar dobles espacios, comas y normalizar
-          palabras_clave = ' '.join(palabras_clave.split())  # Quitar espacios adicionales
-          palabras_clave = palabras_clave.replace(', ', ',')  # Quitar espacios después de comas
-          palabras_clave = ', '.join(palabras_clave.split(','))  # Asegurar un espacio después de cada coma
-
-          processed_data.append([cluster_id, cantidad, porcentaje, palabras_clave])
-
-      # Crear DataFrame con nombres de columnas normalizados
-      df = pd.DataFrame(processed_data, columns=['cluster', 'cantidad_palabras', 'porcentaje_palabras', 'palabras_clave'])
-
-      # Cambiar nombres de columnas a minúsculas con guiones bajos
-      df.columns = df.columns.str.lower().str.replace(' ', '_')
-
-      # Ver resultado final
-      print(df)
-
     """
     #df = pd.read_csv('files/input/clusters_report.txt', sep= '\t')
 
